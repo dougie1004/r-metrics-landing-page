@@ -68,6 +68,13 @@ st.markdown("""
         border: 1px solid #e5e7eb;
         margin-top: 1.5rem;
     }
+    /* 모바일 환경 최적화를 위해 일부 컬럼 레이아웃을 해제 */
+    @media (max-width: 768px) {
+        .stColumns > div {
+            width: 100% !important;
+            flex: none !important;
+        }
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -160,6 +167,7 @@ with st.form("analysis_form"):
     
     # 상권 분석 변수
     st.subheader("1. 상권 및 위치 변수")
+    # 데스크톱에서는 2:1 비율, 모바일에서는 100% 폭을 유지하도록 조정
     col1, col2 = st.columns([3, 1])
     with col1:
         address = st.text_input("창업 희망 주소 입력", value="예: 선릉로 130길 19", help="실제 데이터를 불러오지 않고 시뮬레이션됩니다.")
@@ -169,14 +177,12 @@ with st.form("analysis_form"):
 
     # 재무 시뮬레이션 변수
     st.subheader("2. 재무 변수 입력 (순이익 예측)")
-    col_cap, col_rent, col_area = st.columns(3)
-    with col_cap:
-        # 입력값은 만 원 단위로 처리
-        initial_capital = st.number_input("초기 자본금 (만원)", min_value=0, value=7000, step=100) * 10000
-    with col_rent:
-        monthly_rent = st.number_input("월 임대료 (만원)", min_value=0, value=250, step=10) * 10000
-    with col_area:
-        area_pyeong = st.number_input("면적 (평)", min_value=1, value=15, step=1)
+    # 모바일 환경에서 컬럼이 좁아지는 것을 방지하기 위해 단일 컬럼으로 변경
+    # 데스크톱에서만 3개의 컬럼으로 보이게 하려면 CSS를 사용해야 하지만, Streamlit의 기본 반응형 동작을 따름
+    
+    initial_capital = st.number_input("초기 자본금 (만원)", min_value=0, value=7000, step=100) * 10000
+    monthly_rent = st.number_input("월 임대료 (만원)", min_value=0, value=250, step=10) * 10000
+    area_pyeong = st.number_input("면적 (평)", min_value=1, value=15, step=1)
 
     analyze_button = st.form_submit_button("AI R-Score 및 재무 시뮬레이션 시작", type="primary")
 
@@ -259,6 +265,7 @@ st.markdown("---")
 st.markdown("<h2 style='text-align: center; font-weight: 800; color: #3b82f6;'>✨ 지금 바로 R-메트릭스 소식을 받아보세요!</h2>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: #6b7280;'>정식 출시 알림 신청자에게는 **첫 달 프리미엄 리포트 50% 할인 쿠폰**을 드립니다.</p>", unsafe_allow_html=True)
 
+# 모바일에서도 입력창이 좁아지지 않도록 컬럼 비율 유지 (3:1)
 col_email, col_btn = st.columns([3, 1])
 
 with col_email:
